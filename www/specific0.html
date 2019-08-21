@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Eyesite for live streaming</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="timepicker.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="timepicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.mydate').datetimepicker({
+                "dateFormat": "yy-mm-dd",
+                "timeFormat": "HH:mm:ss"
+            });
+            //$('#mydate').timepicker({"timeFormat": "HH:mm"}); //只有 時、分、秒 用 timepicker
+        });
+    </script>
+    
+    <style>
+        .img_frame {
+            background-color: black;
+            color: blanchedalmond;
+            /* padding: 20px; */
+            width: 40%;
+            height: 30%;
+        }
+        body {
+            margin:0;
+            padding:0;
+            background: #000 url(https://upload.cc/i1/2019/08/09/nHE3RN.jpg) center center fixed no-repeat;
+            -moz-background-size: cover;
+            background-size: cover;
+    }
+    </style>
+    <style type="text/css">
+        .ui-timepicker-div .ui-widget-header {
+            margin-bottom: 8px;
+        }
+    
+        .ui-timepicker-div dl {
+            text-align: left;
+        }
+    
+        .ui-timepicker-div dl dt {
+            height: 25px;
+            margin-bottom: -25px;
+        }
+    
+        .ui-timepicker-div dl dd {
+            margin: 0 10px 10px 65px;
+        }
+    
+        .ui-timepicker-div td {
+            font-size: 90%;
+        }
+    
+        .ui-tpicker-grid-label {
+            background: none;
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    
+    
+</head>
+
+<body>
+    <img src="https://upload.cc/i1/2019/08/09/UMQGJ9.png" width="40%" style="margin-top:0">
+<!-- "
+    <div id="container" style="width:500px">
+        <div id="header" style="background-color:black">
+            <h1 style="margin-top:0;color:blanchedalmond">Home</h1> -->
+        </div>
+        <div id="menu" style="background-color:black;height:35%;width:20%;position:relative;top:120px;">
+            <!-- style="position:relative;top:470px;left:625px;" -->
+            <a href="./index.html" style="color:blanchedalmond; font-size: 40px">Menu</a><br>
+            <a href="./specific0.html" style="color:blanchedalmond; font-size: 20px">Specific Image 0</a><br>
+        </div>
+        <h1 style="position:relative;top:-150px;left: 535px;">CH0</h1>
+        <!-- <img src="https://upload.cc/i1/2019/08/09/GWr0qa.jpg" class="img_frame" style="position:relative;top:400px;left:775px;">
+        <form action="/example/html5/demo_form.asp" method="get">
+            <input type="datetime-local" name="user_date0" style="position:relative;top:660px;left:815px;"/>
+            <input type="submit" style="position:relative;top:667px;left:1050px;"/>
+        </form> -->
+        <img id="spec_image" src="https://upload.cc/i1/2019/08/15/vBbZrh.png"+ class="img_frame"
+            style="position:relative;top:-150px;left:535px;">
+
+        <input type="text" id="start"class="mydate" style="position:relative;top:100px;left: -200px" >
+        <input type="text" id="end" class="mydate" style="position:relative;top:100px;left: 300px">
+        <select id="channel"  style="position: relative;top: 100px;left: 50px">
+            <option value="0" selected>ch0</option>
+            <option value="1">ch1</option>
+            <option value="2">ch2</option>
+            <option value="3">ch3</option>
+        </select>
+        <button id="submit" type="button" style="position: relative;top:100px;left:-90px">submit</button>
+        <script>
+            var wsUri = "ws://localhost:8081/api/connect";
+            websocket = new WebSocket(wsUri);
+            websocket.onopen = function (evt) {
+                console.log(evt);
+            };
+            websocket.onmessage = function (evt) {
+                console.log(evt);
+                // var json = JSON.parse(evt);
+                let data = JSON.parse(evt.data)
+                $("#spec_image").attr("src", "./ch"+data.channel+"/"+data.image+"."+data.extension)
+
+                // console.log(evt.data[1].image);
+            };
+            // function changeValue() {
+            //         var obj = document.getElementById('channel'); //定位id
+            //         var index = obj.selectedIndex; // 选中索引
+            //         var value = obj.options[index].value; // 选中值
+                // }
+            // var setUser = toStr(value)
+            $(".mydate").datetimepicker()
+            $("#submit").click(function(){
+                var channel_select = $("select option:selected").val()
+                var start_val = $("#start").val()[6] + $("#start").val()[7] + $("#start").val()[8] + $("#start").val()[9] + $("#start").val()[0] + $("#start").val()[1] + $("#start").val()[3] + $("#start").val()[4] + $("#start").val()[11] + $("#start").val()[12] + $("#start").val()[14] + $("#start").val()[15] + $("#start").val()[17] + $("#start").val()[18];
+                var end_val = $("#end").val()[6] + $("#end").val()[7] + $("#end").val()[8] + $("#end").val()[9] + $("#end").val()[0] + $("#end").val()[1] + $("#end").val()[3] + $("#end").val()[4] + $("#end").val()[11] + $("#end").val()[12] + $("#end").val()[14] + $("#end").val()[15] + $("#end").val()[17] + $("#end").val()[18]
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({ start: start_val, end: end_val, channel: channel_select }),
+                    dataType: 'json',
+                    type: 'POST',
+                    url: "http://localhost:8080/api/getTime",
+                    success: function (response) {
+                        console.log(response)
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error()
+                    }
+
+                })
+                
+                // alert("你要觀看的是channel "+strUser+"從" + start_val +
+                //     "至" + end_val + "的影片嗎");
+        }
+    );
+
+        </script>
+        
+</html>
